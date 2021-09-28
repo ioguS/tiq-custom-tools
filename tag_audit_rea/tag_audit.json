@@ -1,0 +1,16 @@
+{
+    "id": "tag_audit",
+    "title": "Tag Audit REA v2",
+    "description": "Customized Tag Audit tool for REA. This tool should extract basic information on tag configurations within the current TIQ profile. (Run this within a TIQ UI)",
+    "scripts": {
+        "_tagAudit": {
+            "title": "Tag Audit REA",
+            "auto_inject": true,
+            "js": "https://git.realestate.com.au/shawn-foo/tiq_custom_tools/blob/main/tag_audit_rea/pageCode.js",
+            "template": "https://solutions.tealium.net/hosted/tealiumTools/tag_audit/rea/ui.html",
+            "remote_js": true,
+            "remote_template": true
+        }
+    }
+}
+
