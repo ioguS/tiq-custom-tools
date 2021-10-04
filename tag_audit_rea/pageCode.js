@@ -14,7 +14,7 @@
                 profileData = [],
                 tags,
                 content = [
-                    '"PROFILE/LIBRARY","UID","TAG VENDOR","TAG TITLE","PUBLISH TARGETS","TAG STATUS","TAG NOTES","INHERITED","LATEST TAG UPDATE -TIMESTAMP", "LATEST TAG UPDATE -USER", "LATEST TAG UPDATE -NOTES","LATEST PUBLISH ENVIRONMENTS", "LATEST PUBLISH TIMESTAMP", "LATEST PUBLISH USER", "LATEST PUBLISH NOTES", "CURRENT TAG TEMPLATE VERSION", "LATEST AVAILABLE TAG TEMPLATE VERSION", "TEMPLATE_VERSION_DIFF","CURRENT CODE VERSION", "LATEST CODE VERSION", "CODE_VERSION_DIFF"'
+                    '"PROFILE/LIBRARY","UID","TAG VENDOR","TAG TITLE","PUBLISH TARGETS","TAG STATUS","TAG NOTES","INHERITED","LATEST TAG UPDATE -TIMESTAMP","LATEST TAG UPDATE -USER","LATEST TAG UPDATE -NOTES","LATEST PUBLISH ENVIRONMENTS","LATEST PUBLISH TIMESTAMP","LATEST PUBLISH USER","LATEST PUBLISH NOTES","CURRENT TAG TEMPLATE VERSION","LATEST AVAILABLE TAG TEMPLATE VERSION","TEMPLATE_VERSION_DIFF","CURRENT CODE VERSION","LATEST CODE VERSION","CODE_VERSION_DIFF"'
                 ],
                 account = utui.login.account;
             tealiumTools.send({ account: account, processing: false });
@@ -273,6 +273,8 @@
 
                             if (t.config_tagversion && tagObject.configFields && tagObject.configFields.length) {
                                 let tagVersion = utui.manage.config.getTagObjectByTagId(t.tag_id).configFields.find(e => e.id == "tagversion");
+                                console.log("Tag Audit Logger: tag config fields: ")
+                                console.log(utui.manage.config.getTagObjectByTagId(t.tag_id).configFields);
 
                                 if (tagVersion) {
                                     let options = tagVersion.options;
@@ -301,7 +303,7 @@
                         row.push(historyObjToArr(history[t.id]));
                         row.push('"' + currentTemplateVersion + '"' || '""');
                         row.push('"' + latestTemplateVersion + '"' || '""');
-                        row.push('"' + "test" + '"' || '""');
+                        row.push('"' + latestTemplateVersion.split('.').at(-1) + '"' || '""');
                         row.push('"' + (t.config_tagversion || "N/A") + '"');
                         row.push('"' + (latestTagVersion || "N/A") + '"');
                         row.push('"' + "test" + '"' || '""');
