@@ -14,7 +14,7 @@
                 profileData = [],
                 tags,
                 content = [
-                    '"PROFILE/LIBRARY","UID","TAG VENDOR","TAG TITLE","PUBLISH TARGETS","TAG STATUS","TAG NOTES","INHERITED","LATEST TAG UPDATE -TIMESTAMP", "LATEST TAG UPDATE -USER", "LATEST TAG UPDATE -NOTES","LATEST PUBLISH ENVIRONMENTS", "LATEST PUBLISH TIMESTAMP", "LATEST PUBLISH USER", "LATEST PUBLISH NOTES", "CURRENT TAG TEMPLATE VERSION", "LATEST AVAILABLE TAG TEMPLATE VERSION", "CURRENT CODE VERSION", "LATEST CODE VERSION"'
+                    '"PROFILE/LIBRARY","UID","TAG VENDOR","TAG TITLE","PUBLISH TARGETS","TAG STATUS","TAG NOTES","INHERITED","LATEST TAG UPDATE -TIMESTAMP", "LATEST TAG UPDATE -USER", "LATEST TAG UPDATE -NOTES","LATEST PUBLISH ENVIRONMENTS", "LATEST PUBLISH TIMESTAMP", "LATEST PUBLISH USER", "LATEST PUBLISH NOTES", "CURRENT TAG TEMPLATE VERSION", "LATEST AVAILABLE TAG TEMPLATE VERSION", "TEMPLATE_VERSION_DIFF","CURRENT CODE VERSION", "LATEST CODE VERSION", "CODE_VERSION_DIFF"'
                 ],
                 account = utui.login.account;
             tealiumTools.send({ account: account, processing: false });
@@ -301,8 +301,10 @@
                         row.push(historyObjToArr(history[t.id]));
                         row.push('"' + currentTemplateVersion + '"' || '""');
                         row.push('"' + latestTemplateVersion + '"' || '""');
+                        row.push('"' + "test" + '"' || '""');
                         row.push('"' + (t.config_tagversion || "N/A") + '"');
                         row.push('"' + (latestTagVersion || "N/A") + '"');
+                        row.push('"' + "test" + '"' || '""');
                         content.push(row.join(","));
                     }
                 }
