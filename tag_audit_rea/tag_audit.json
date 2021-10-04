@@ -1,6 +1,6 @@
 {
     "id": "tag_audit_rea",
-    "title": "Tag Audit Tool - REA 1.0.1",
+    "title": "Tag Audit Tool - REA 1.0.2",
     "description": "Customized Tag Audit tool for REA. This tool should extract basic information on tag configurations within the current TIQ profile. (Run this within a TIQ UI)",
     "scripts": {
         "_tagAudit": {
