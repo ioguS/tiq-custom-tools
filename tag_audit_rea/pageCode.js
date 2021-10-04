@@ -379,6 +379,7 @@
                     utui.util.loadingModalStop();
                     download(content);
                     console.info("All Done, toast is ready!");
+                    alert.info("All Done, toast is ready!");
                     //Retun back to orignial state.
                     utui.service.get(utui.service.restapis.GET_PROFILE, { account: utui.login.account, profile: utui.login.profile }, { async: false }, null);
                 });
