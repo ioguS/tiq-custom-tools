@@ -22,6 +22,17 @@
             var download = function (output) {
                 var link, $selector, csvUrl, csvString, csvData;
 
+                function pad2(n) {
+                    return (n < 10 ? '0' : '') + n;
+                  }
+                  
+                  var date = new Date();
+                  var month = pad2(date.getMonth()+1);//months (0-11)
+                  var day = pad2(date.getDate());//day (1-31)
+                  var year= date.getFullYear();
+                  
+                  var formattedDate =  year+month+day;
+
                 tealiumTools.send({ account: account, processing: false });
 
                 csvString = output.join("");
@@ -32,7 +43,7 @@
                 link = document.createElement("a");
                 link.setAttribute("id", "profileExport_csv");
                 link.setAttribute("href", csvUrl);
-                link.setAttribute("download", account + " account audit - " + new Date().toJSON().slice(0, 10) + ".csv");
+                link.setAttribute("download", account + "_account_audit-" + formattedDate + ".csv");
                 $selector.append(link);
                 $("#profileExport_csv")[0].click();
                 $("#profileExport_csv").remove();
