@@ -13,9 +13,12 @@
                 numProfiles,
                 profileData = [],
                 tags,
-                content = [
+                og_content = [
                     '"PROFILE/LIBRARY","UID","TAG VENDOR","TAG TITLE","PUBLISH TARGETS","TAG STATUS","TAG NOTES","INHERITED","LATEST TAG UPDATE -TIMESTAMP","LATEST TAG UPDATE -USER","LATEST TAG UPDATE -NOTES","LATEST PUBLISH ENVIRONMENTS","LATEST PUBLISH TIMESTAMP","LATEST PUBLISH USER","LATEST PUBLISH NOTES","CURRENT TAG TEMPLATE VERSION","LATEST AVAILABLE TAG TEMPLATE VERSION","TEMPLATE_VERSION_DIFF","CURRENT CODE VERSION","LATEST CODE VERSION","CODE_VERSION_DIFF"'
                 ],
+                content = [
+                    '"PROFILE/LIBRARY","UID","TAG VENDOR","TAG TITLE","TAG STATUS","INHERITED","LATEST PUBLISH TIMESTAMP","UP TO DATE?","CURRENT CODE VERSION","LATEST CODE VERSION"'
+                ]
                 account = utui.login.account;
             tealiumTools.send({ account: account, processing: false });
 
@@ -265,11 +268,13 @@
                 return versionString;
             };
 
+            //this method loads the variable that populates the csv file
             var getTags = async function (result, profile) {
                 var row,
                     t,
                     history,
-                    tags = result.manage;
+                    tags = result.manage,
+                    tv_date;
                 if (typeof tags == "object") {
                     history = getPublishHistory(result);
                     //console.log(profile,history);
@@ -300,24 +305,38 @@
                             latestTemplateVersion = await getLatestTemplateVersion(t.tag_id, t.config_tagversion);
                         }
 
+                        //date diff helper variables
+                        currentTvDate = currentTemplateVersion.split('.').at(-1);
+                        latestTvDate = latestTemplateVersion.split('.').at(-1);
+                        var currentTvYear        = currentTvDate.substring(0,4);
+                        var currentTvMonth       = currentTvDate.substring(4,6);
+                        var currentTvDay         = currentTvDate.substring(6,8);
+                        var latestTvYear        = latestTvDate.substring(0,4);
+                        var latestTvMonth       = latestTvDate.substring(4,6);
+                        var latestTvDay         = latestTvDate.substring(6,8);
+                        var currTvDate = new Date(currentTvYear, currentTvMonth, currentTvDay);
+                        var lateTvDate = new Date(latestTvYear, latestTvMonth, latestTvDay); 
+                        var tvDiffTime = Math.abs(lateTvDate - currTvDate);
+                        var tvdiffDays = Math.ceil(tvDiffTime / (1000 * 60 * 60 * 24));             //template version days out of date
+
+                        //should have 13 headers
                         //console.log(profile,t.id,history[t.id]);
                         row = [];
-                        row.push('\r\n"' + profile + '"');
-                        row.push('"' + t.id + '"');
-                        row.push('"' + t.tag_name + '"');
-                        row.push('"' + t.title + '"');
-                        row.push('"' + getTargets(t.selectedTargets) + '"');
-                        row.push('"' + t.status + '"');
-                        row.push('"' + (t.notes !== undefined ? htmlDecode(t.notes) : "") + '"');
-                        row.push('"' + (t.imported !== undefined ? "Yes" : "No") + '"');
-                        row.push(getTagHist(t.id, result));
-                        row.push(historyObjToArr(history[t.id]));
-                        row.push('"' + currentTemplateVersion + '"' || '""');
-                        row.push('"' + latestTemplateVersion + '"' || '""');
-                        row.push('"' + latestTemplateVersion.split('.').at(-1) + '"' || '""');
+                        row.push('\r\n"' + profile + '"');                                          //TIQ Profile
+                        row.push('"' + t.id + '"');                                                 //Tag ID
+                        row.push('"' + t.tag_name + '"');                                           //Tag Vendor
+                        row.push('"' + t.title + '"');                                              //Tag Title
+                        //row.push('"' + getTargets(t.selectedTargets) + '"');                      //Tag publish targets (prod, qa, dev)
+                        row.push('"' + t.status + '"');                                             //Tag status, active/inactive
+                        //row.push('"' + (t.notes !== undefined ? htmlDecode(t.notes) : "") + '"'); //Tag notes
+                        row.push('"' + (t.imported !== undefined ? "Yes" : "No") + '"');            //Is the tag inherited?
+                        //row.push(getTagHist(t.id, result));                                       //Latest published environments
+                        row.push(historyObjToArr(history[t.id]));                                   //Last publish date
+                        //row.push('"' + currentTemplateVersion + '"' || '""');                     //123.am.123
+                        //row.push('"' + latestTemplateVersion + '"' || '""');                      //124.am.124
+                        row.push('"' + tvdiffDays + '  days out of date"' || '""');      //124.am.[124] < last part
                         row.push('"' + (t.config_tagversion || "N/A") + '"');
                         row.push('"' + (latestTagVersion || "N/A") + '"');
-                        row.push('"' + "test" + '"' || '""');
                         content.push(row.join(","));
                     }
                 }
@@ -384,6 +403,7 @@
                     utui.service.get(utui.service.restapis.GET_PROFILE, { account: utui.login.account, profile: utui.login.profile }, { async: false }, null);
                 });
             };
+
             var init = function () {
                 utui.util.loadingModalStart("Getting Profile List");
                 utui.service.get(utui.service.restapis.GET_PROFILES, { account: account, profile: "main" }, { async: true }, processProfiles);
